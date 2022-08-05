@@ -28,7 +28,7 @@ namespace UsuariosAPI.Data
                 NormalizedEmail = "ADMIN@ADMIN.COM",
                 EmailConfirmed = true,
                 SecurityStamp = Guid.NewGuid().ToString(),
-                Id = 99999
+                Id = 1
             };
 
             PasswordHasher<CustomIdentityUser> hasher = new PasswordHasher<CustomIdentityUser>();
@@ -40,15 +40,15 @@ namespace UsuariosAPI.Data
             builder.Entity<CustomIdentityUser>().HasData(userAdmin);
 
             builder.Entity<IdentityRole<int>>().HasData(
-                new IdentityRole<int> { Id = 99999, Name = "admin", NormalizedName = "ADMIN" }
+                new IdentityRole<int> { Id = 1, Name = "admin", NormalizedName = "ADMIN" }
             ); 
             
             builder.Entity<IdentityRole<int>>().HasData(
-                new IdentityRole<int> { Id = 99998, Name = "initial", NormalizedName = "INITIAL" }
+                new IdentityRole<int> { Id = 2, Name = "initial", NormalizedName = "INITIAL" }
             );
 
             builder.Entity<IdentityUserRole<int>>().HasData(
-                new IdentityUserRole<int> { RoleId = 99999, UserId = 99999 }
+                new IdentityUserRole<int> { RoleId = 1, UserId = 1 }
             );
         }
     }
