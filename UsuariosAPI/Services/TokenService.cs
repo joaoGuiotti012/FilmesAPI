@@ -10,12 +10,14 @@ namespace UsuariosAPI.Services
 {
     public class TokenService
     {
-        public Token CreateToken(IdentityUser<int> usuario)
+        public Token CreateToken(CustomIdentityUser usuario, string role)
         {
             Claim[] direitoUsuario = new Claim[]
             {
                 new Claim("username", usuario.UserName),
-                new Claim("id", usuario.Id.ToString())
+                new Claim("id", usuario.Id.ToString()),
+                new Claim("role", role),
+                new Claim("dataNascimento", usuario.DataNascimento.ToString())
             };
             var chave = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes("5sa7a#%486*0-_)08&6&*5#$%45%¨#$345")

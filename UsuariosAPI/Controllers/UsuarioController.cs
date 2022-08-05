@@ -7,6 +7,7 @@ using UsuariosAPI.Services;
 namespace UsuariosAPI.Controllers
 {
     [Route("[controller]")]
+    [ApiController]
     public class UsuarioController : ControllerBase
     {
         private readonly UsuarioService _usuarioService;
@@ -41,7 +42,7 @@ namespace UsuariosAPI.Controllers
             return result.IsFailed ? Unauthorized(result.Errors) : Ok(result.Successes);
         }
 
-        [HttpGet("ativarConta")]
+        [HttpGet("ativar-conta")]
         public IActionResult ActiveAccount([FromQuery] AtivaContaRequest request)
         {
             Result result = _usuarioService.ActivateAcountUser(request);
@@ -49,5 +50,20 @@ namespace UsuariosAPI.Controllers
             return Ok(result.Successes);
         }
 
+        [HttpPost("solicita-reset")]
+        public IActionResult ResetPassword([FromBody] SolicitaResetRequest request)
+        {
+            Result result = _usuarioService.SolicitaResetSenha(request);
+            if( result.IsFailed) return Unauthorized(result.Errors);
+            return Ok(result.Successes);
+        }
+
+        [HttpPost("reseta-senha")]
+        public IActionResult AlterarSenha([FromBody] AlterarSenhaRequest request)
+        {
+            Result result = _usuarioService.AlteraSenhaUsuario(request);
+            if (result.IsFailed) return Unauthorized(result.Errors);
+            return Ok(result.Successes);
+        }
     }
 }

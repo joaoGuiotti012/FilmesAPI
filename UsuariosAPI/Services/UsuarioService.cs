@@ -13,27 +13,33 @@ namespace UsuariosAPI.Services
     public class UsuarioService
     {
         private IMapper _mapper;
-        private UserManager<IdentityUser<int>> _userManager;
-        private SignInManager<IdentityUser<int>> _signInManager;
+        private UserManager<CustomIdentityUser> _userManager;
+        private SignInManager<CustomIdentityUser> _signInManager;
         private TokenService _tokenService;
         private EmailService _emailService;
+        private RoleManager<IdentityRole<int>> _roleManager;
 
-        public UsuarioService(IMapper mapper, UserManager<IdentityUser<int>> userManager,
-            SignInManager<IdentityUser<int>> signInManager, TokenService tokenService, EmailService emailService)
+        public UsuarioService(IMapper mapper, UserManager<CustomIdentityUser> userManager,
+            SignInManager<CustomIdentityUser> signInManager, TokenService tokenService,
+            EmailService emailService, RoleManager<IdentityRole<int>> roleManager)
         {
             _mapper = mapper;
             _userManager = userManager;
             _signInManager = signInManager;
             _tokenService = tokenService;
             _emailService = emailService;
+            _roleManager = roleManager;
         }
 
         public Result CadastrarUsuario(CreateUsuarioDto createDto)
         {
             Usuario user = _mapper.Map<Usuario>(createDto);
-            IdentityUser<int> identityUser = _mapper.Map<IdentityUser<int>>(user);
+            CustomIdentityUser identityUser = _mapper.Map<CustomIdentityUser>(user);
             Task<IdentityResult> identityResult = _userManager
                 .CreateAsync(identityUser, createDto.Password);
+            // Setando Role Inicial
+            _userManager.AddToRoleAsync(identityUser, "initial");
+             
             if (identityResult.Result.Succeeded)
             {
                 var codeAtivation = _userManager
@@ -61,9 +67,13 @@ namespace UsuariosAPI.Services
                     .FirstOrDefault(user =>
                         user.NormalizedUserName == request.Username.Normalize().ToUpper()
                     );
-                Token token = _tokenService.CreateToken(identityUser);
+                Token token = _tokenService
+                    .CreateToken(identityUser, _signInManager
+                        .UserManager.GetRolesAsync(identityUser).Result
+                        .FirstOrDefault()
+                    );
                 return Result.Ok().WithSuccess(token.Value);
-            } 
+            }
             return Result.Fail("Falha ao realizar o login!");
         }
 
@@ -86,5 +96,35 @@ namespace UsuariosAPI.Services
             return Result.Fail("Falha ao ativar a conta");
         }
 
+        public Result SolicitaResetSenha(SolicitaResetRequest request)
+        {
+            CustomIdentityUser identityUser = GetUserByEmail(request.Email);
+            if (identityUser != null)
+            {
+                string codidoRecuperacao = _signInManager
+                    .UserManager
+                    .GeneratePasswordResetTokenAsync(identityUser)
+                    .Result;
+                return Result.Ok().WithSuccess(codidoRecuperacao);
+            }
+            return Result.Fail("Falha ao solicitar a redefinição de senha!");
+        }
+        public Result AlteraSenhaUsuario(AlterarSenhaRequest request)
+        {
+            CustomIdentityUser identityUser = GetUserByEmail(request.Email);
+            IdentityResult result = _signInManager
+                .UserManager.ResetPasswordAsync(identityUser, request.Token, request.Password)
+                .Result;
+            if (result.Succeeded) return Result.Ok().WithSuccess("Senha redefinida com sucesso!");
+            return Result.Fail("Houve um erro na opreção de alteração de senha!");
+        }
+
+        private CustomIdentityUser GetUserByEmail(string email)
+        {
+            return _signInManager
+                .UserManager
+                .Users
+                .FirstOrDefault(u => u.NormalizedEmail == email.ToUpper());
+        }
     }
 }

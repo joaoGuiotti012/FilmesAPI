@@ -3,6 +3,7 @@ using FilmesAPI.Data;
 using FilmesAPI.Data.Dtos.Filme;
 using FilmesAPI.Models;
 using FilmesAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -22,6 +23,7 @@ namespace FilmesAPI.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "admin, initial", Policy = "IdadeMinima")]
         public IActionResult GetAll([FromQuery] int? classificacaoEtaria)
         {
             List<ReadFilmeDto> filmes = _filmeService.GetAll(classificacaoEtaria);
@@ -29,6 +31,7 @@ namespace FilmesAPI.Controllers
         }
 
         [HttpGet("{Id}")]
+        [Authorize(Roles = "admin, initial")]
         public IActionResult GetById(int Id)
         {
             ReadFilmeDto filme = _filmeService.GetById(Id);
@@ -36,6 +39,7 @@ namespace FilmesAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "admin")]
         public IActionResult AdicionarFilme([FromBody] CreateFilmeDto filmeDto)
         {
             ReadFilmeDto filme = _filmeService.Add(filmeDto);
@@ -43,6 +47,7 @@ namespace FilmesAPI.Controllers
         }
 
         [HttpPut("{Id}")]
+        [Authorize(Roles = "admin")]
         public IActionResult AtualizaFilme(int Id, [FromBody] UpdateFilmeDto filmeDto)
         {
             bool updatedFilme = _filmeService.Update(Id, filmeDto);
@@ -50,6 +55,7 @@ namespace FilmesAPI.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "admin")]
         public IActionResult Delete(int id)
         {
             return _filmeService.DeleteById(id) ?

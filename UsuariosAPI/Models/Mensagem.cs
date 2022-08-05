@@ -16,7 +16,7 @@ namespace UsuariosAPI.Models
             Destinatario = new List<MailboxAddress>();
             Destinatario.AddRange(destinatario.Select(d => MailboxAddress.Parse(d)));
             Assunto = assunto;
-            Conteudo = $"http://localhost:5002/usuario/ativarConta?UsuarioId={usuarioId}&CodigoAtivacao={code}";
+            Conteudo = $"http://localhost:5002/usuario/ativar-conta?UsuarioId={usuarioId}&CodigoAtivacao={code}";
         }
     }
 }

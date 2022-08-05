@@ -5,7 +5,9 @@ VisualStudioVersion = 17.2.32526.322
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FilmesAPI", "FilmesAPI\FilmesAPI.csproj", "{BCD92C61-8177-42F3-A26E-0E0E2A4A3666}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UsuariosAPI", "UsuariosAPI\UsuariosAPI.csproj", "{9BAF8058-084E-4352-8CB3-F1C36FAFE333}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UsuariosAPI", "UsuariosAPI\UsuariosAPI.csproj", "{9BAF8058-084E-4352-8CB3-F1C36FAFE333}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{886D8426-29B0-4D63-972F-6DC171C24F52}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,6 +26,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{BCD92C61-8177-42F3-A26E-0E0E2A4A3666} = {886D8426-29B0-4D63-972F-6DC171C24F52}
+		{9BAF8058-084E-4352-8CB3-F1C36FAFE333} = {886D8426-29B0-4D63-972F-6DC171C24F52}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0B168B99-D2E9-47C4-9E87-C8209C11B862}
